@@ -1,4 +1,5 @@
 ﻿using OpenTK.Mathematics;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -21,6 +22,21 @@ namespace Breakout
 
         private readonly Vector2 InitialPlayerSize = new(100.0f, 20.0f);
         private readonly float InitialPlayerVelocity = 500.0f;
+
+        private readonly Dictionary<GameState, Action<float>> processInputStates = new()
+        {
+            { GameState.Active, (float dt) => ActiveInputProcess(dt) },
+            { GameState.Menu, (float dt) => MenuInputProcess(dt) },
+            { GameState.Pause, (float dt) => PauseInputProcess(dt) },
+            { GameState.Win, (float dt) => WinInputProcess(dt) },
+        };
+        //private readonly Dictionary<GameState, Action<float>> updateStates = new()
+        //{
+        //    { GameState.Active, (float dt) => ActiveUpdate(dt) },
+        //    { GameState.Menu, (float dt) => MenuUpdate(dt) },
+        //    { GameState.Pause, (float dt) => PauseUpdate(dt) },
+        //    { GameState.Win, (float dt) => WinUpdate(dt) },
+        //};
 
         public Game(int width, int height) => (Width, Height) = (width, height);
 
@@ -56,12 +72,12 @@ namespace Breakout
 
         public void ProcessInput(float dt)
         {
-
+            processInputStates[State](dt);
         }
 
         public void Update(float dt)
         {
-
+            //updateStates[State](dt);
         }
 
         public void Render()
@@ -75,6 +91,26 @@ namespace Breakout
             );
             Levels[Level].Draw(Renderer);
             Player.Draw(Renderer);
+        }
+
+        private static void ActiveInputProcess(float dt)
+        {
+
+        }
+
+        private static void MenuInputProcess(float dt)
+        {
+
+        }
+
+        private static void PauseInputProcess(float dt)
+        {
+
+        }
+
+        private static void WinInputProcess(float dt)
+        {
+
         }
     }
 }
