@@ -1,4 +1,5 @@
 ﻿using OpenTK.Mathematics;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Breakout
@@ -9,14 +10,15 @@ namespace Breakout
         public int Height;
         public GameState State = GameState.Active;
         public SpriteRenderer Renderer;
+        public List<GameLevel> Levels = new();
+        public int Level = 0;
 
         public bool[] Keys = new bool[1024];
 
-        public Game(int width, int height)
-        {
-            Width = width;
-            Height = height;
-        }
+        private readonly string[] SpriteVertexPath = { "Shaders", "sprite.vert" };
+        private readonly string[] SpriteFragmentPath = { "Shaders", "sprite.frag" };
+
+        public Game(int width, int height) => (Width, Height) = (width, height);
 
         ~Game()
         {
@@ -25,17 +27,24 @@ namespace Breakout
 
         public void Init()
         {
-            string[] vertexPath = { "Shaders", "sprite.vs" };
-            string[] fragmentPath = { "Shaders", "sprite.frag" };
-            string[] ballTexturePath = { "Textures", "ball.png" };
+            string[] texturePaths = ResourceManager.GetTexturePaths();
+            string[] levelPaths = ResourceManager.GetLevelPaths();
 
-            Shader sprite = ResourceManager.LoadShader("sprite", Path.Combine(vertexPath), Path.Combine(fragmentPath));
+            Shader sprite = ResourceManager.LoadShader("sprite", SpriteVertexPath, SpriteFragmentPath);
 
             Matrix4.CreateOrthographicOffCenter(0.0f, (float)Width, (float)Height, 0.0f, -1.0f, 1.0f, out Matrix4 projection);
 
             sprite.Use().SetInteger("image", 0).SetMatrix4("projection", projection);
-            Renderer = new SpriteRenderer(sprite);
-            ResourceManager.LoadTexture(Path.Combine(ballTexturePath), true, "ball");
+
+            foreach (string path in texturePaths)
+            {
+                ResourceManager.LoadTexture(path);
+            }
+
+            foreach (string path in levelPaths)
+            {
+                Levels.Add(new GameLevel(path, Width, Height / 2));
+            }
         }
 
         public void ProcessInput(float dt)
@@ -51,12 +60,13 @@ namespace Breakout
         public void Render()
         {
             Renderer.DrawSprite(
-                ResourceManager.GetTexture("ball"),
-                new Vector2(200, 200),
-                new Vector2(300, 400),
-                45,
-                new Vector3(0, 1, 0)
+                ResourceManager.GetTexture("background"),
+                new Vector2(0, 0),
+                new Vector2(Width, Height),
+                0,
+                new Vector3(1.0f, 1.0f, 1.0f)
             );
+            Levels[Level].Draw(ref Renderer);
         }
     }
 }

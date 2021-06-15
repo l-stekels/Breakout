@@ -1,9 +1,9 @@
 ﻿using System.IO;
-using System.Drawing;
-using System.Drawing.Imaging;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 using System.Collections.Generic;
 using OpenTK.Graphics.OpenGL4;
-using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
 
 namespace Breakout
 {
@@ -12,9 +12,32 @@ namespace Breakout
         public static Dictionary<string, Shader> Shaders = new();
         public static Dictionary<string, Texture2D> Textures = new();
 
-        public static Shader LoadShader(string name, string vShaderFile, string fShaderFile, string gShaderFile = null)
+        public static string[] GetTexturePaths()
         {
-            Shaders[name] = LoadShaderFromFile(vShaderFile, fShaderFile, gShaderFile);
+            return Directory.GetFiles("Textures");
+        }
+
+        public static string[] GetLevelPaths()
+        {
+            return Directory.GetFiles("Levels/");
+        }
+
+        public static Shader LoadShader(string name, string[] vShaderFilePath, string[] fShaderFilePath)
+        {
+            Shaders[name] = LoadShaderFromFile(
+                Path.Combine(vShaderFilePath),
+                Path.Combine(fShaderFilePath)
+            );
+            return Shaders[name];
+        }
+
+        public static Shader LoadShader(string name, string[] vShaderFilePath, string[] fShaderFilePath, string[] gShaderFilePath)
+        {
+            Shaders[name] = LoadShaderFromFile(
+                Path.Combine(vShaderFilePath),
+                Path.Combine(fShaderFilePath),
+                Path.Combine(gShaderFilePath)
+            );
             return Shaders[name];
         }
 
@@ -23,9 +46,17 @@ namespace Breakout
             return Shaders[name];
         }
 
-        public static Texture2D LoadTexture(string file, bool alpha, string  name)
+        public static Texture2D LoadTexture(string filePath, string  name)
         {
-            Textures[name] = LoadTextureFromFile(file, alpha);
+            Textures[name] = LoadTextureFromFile(filePath);
+            return Textures[name];
+        }
+
+        public static Texture2D LoadTexture(string filePath)
+        {
+            string name = Path.GetFileName(filePath);
+            name = name.Remove(0, name.Length);
+            Textures[name] = LoadTextureFromFile(filePath);
             return Textures[name];
         }
 
@@ -59,32 +90,34 @@ namespace Breakout
             );
         }
 
-        private static Texture2D LoadTextureFromFile(string file, bool alpha)
+        private static Texture2D LoadTextureFromFile(string file)
         {
             ThrowIfFileDoesNotExist(file);
             Texture2D texture = new();
-            var readFormat = System.Drawing.Imaging.PixelFormat.Format32bppRgb;
-            if (alpha)
+            Image<Rgba32> image = Image.Load<Rgba32>(file);
+            image.Mutate(x => x.Flip(FlipMode.Vertical));
+
+            List<byte> pixels = new(4 * image.Width * image.Height);
+            for (int y = 0; y < image.Height; y++)
             {
-                texture.InternalFormat = PixelInternalFormat.Rgba;
-                texture.ImageFormat = PixelFormat.Bgra;
-                readFormat = System.Drawing.Imaging.PixelFormat.Format32bppArgb;
+                var row = image.GetPixelRowSpan(y);
+                for (int x = 0; x < image.Width; x++)
+                {
+                    pixels.Add(row[x].B);
+                    pixels.Add(row[x].G);
+                    pixels.Add(row[x].R);
+                    pixels.Add(row[x].A);
+                }
             }
-            using (Bitmap image = new(file))
-            {
-                BitmapData data = image.LockBits(
-                    new Rectangle(0, 0, image.Width, image.Height),
-                    ImageLockMode.ReadOnly,
-                    readFormat
-                );
-                texture.Generate(image.Width, image.Height, data);
-                return texture;
-            }
+
+            texture.Generate(image.Width, image.Height, pixels);
+            return texture;
+
         }
 
-        private static void ThrowIfFileDoesNotExist(string filePath)
+        public static void ThrowIfFileDoesNotExist(string filePath)
         {
-            if (!System.IO.File.Exists(filePath))
+            if (!File.Exists(filePath))
             {
                 throw new System.Exception($"File {filePath} does not exist!");
             }
