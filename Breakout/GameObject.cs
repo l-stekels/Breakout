@@ -17,6 +17,8 @@ namespace Breakout
 
         public GameObject(Vector2 position, Vector2 size, Texture2D sprite, Vector3 color) => (Positon, Size, Sprite, Color) = (position, size, sprite, color);
 
+        public GameObject(Vector2 position, Vector2 size, Texture2D sprite) => (Positon, Size, Sprite) = (position, size, sprite);
+
         public virtual void Draw(SpriteRenderer renderer)
         {
             renderer.DrawSprite(Sprite, Positon, Size, Rotation, Color);

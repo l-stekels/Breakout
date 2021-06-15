@@ -10,6 +10,7 @@ namespace Breakout
         public int Height;
         public GameState State = GameState.Active;
         public SpriteRenderer Renderer;
+        public GameObject Player;
         public List<GameLevel> Levels = new();
         public int Level = 0;
 
@@ -18,11 +19,15 @@ namespace Breakout
         private readonly string[] SpriteVertexPath = { "Shaders", "sprite.vert" };
         private readonly string[] SpriteFragmentPath = { "Shaders", "sprite.frag" };
 
+        private readonly Vector2 InitialPlayerSize = new(100.0f, 20.0f);
+        private readonly float InitialPlayerVelocity = 500.0f;
+
         public Game(int width, int height) => (Width, Height) = (width, height);
 
         ~Game()
         {
             ResourceManager.Clear();
+            Renderer = null;
         }
 
         public void Init()
@@ -45,6 +50,8 @@ namespace Breakout
             {
                 Levels.Add(new GameLevel(path, Width, Height / 2));
             }
+            Vector2 playerPosition = new(Width / 2.0f - InitialPlayerSize.X / 2.0f, Height - InitialPlayerSize.Y);
+            Player = new(playerPosition, InitialPlayerSize, ResourceManager.GetTexture("paddle"));
         }
 
         public void ProcessInput(float dt)
@@ -67,6 +74,7 @@ namespace Breakout
                 new Vector3(1.0f, 1.0f, 1.0f)
             );
             Levels[Level].Draw(Renderer);
+            Player.Draw(Renderer);
         }
     }
 }
