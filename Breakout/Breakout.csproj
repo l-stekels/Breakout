@@ -70,13 +70,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Levels\first.lvl">
+    <Content Include="Levels\one.lvl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Levels\second.lvl">
+    <Content Include="Levels\two.lvl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Levels\third.lvl">
+    <Content Include="Levels\three.lvl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Levels\fourth.lvl">
