@@ -31,7 +31,7 @@ namespace Breakout
             Init(tileData, levelWidth, levelHeight);
         }
 
-        public void Draw(ref SpriteRenderer renderer)
+        public void Draw(SpriteRenderer renderer)
         {
             foreach (GameObject tile in Bricks)
             {
@@ -39,7 +39,7 @@ namespace Breakout
                 {
                     continue;
                 }
-                tile.Draw(ref renderer);
+                tile.Draw(renderer);
             }
         }
 

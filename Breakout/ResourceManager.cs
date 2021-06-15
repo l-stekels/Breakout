@@ -24,19 +24,25 @@ namespace Breakout
 
         public static Shader LoadShader(string name, string[] vShaderFilePath, string[] fShaderFilePath)
         {
-            Shaders[name] = LoadShaderFromFile(
-                Path.Combine(vShaderFilePath),
-                Path.Combine(fShaderFilePath)
+            Shaders.Add(
+                name,
+                LoadShaderFromFile(
+                    Path.Combine(vShaderFilePath),
+                    Path.Combine(fShaderFilePath)
+                )
             );
             return Shaders[name];
         }
 
         public static Shader LoadShader(string name, string[] vShaderFilePath, string[] fShaderFilePath, string[] gShaderFilePath)
         {
-            Shaders[name] = LoadShaderFromFile(
-                Path.Combine(vShaderFilePath),
-                Path.Combine(fShaderFilePath),
-                Path.Combine(gShaderFilePath)
+            Shaders.Add(
+                name,
+                LoadShaderFromFile(
+                    Path.Combine(vShaderFilePath),
+                    Path.Combine(fShaderFilePath),
+                    Path.Combine(gShaderFilePath)
+                )
             );
             return Shaders[name];
         }
@@ -48,15 +54,20 @@ namespace Breakout
 
         public static Texture2D LoadTexture(string filePath, string  name)
         {
-            Textures[name] = LoadTextureFromFile(filePath);
+            Textures.Add(
+                name,
+                LoadTextureFromFile(filePath)
+            );
             return Textures[name];
         }
 
         public static Texture2D LoadTexture(string filePath)
         {
-            string name = Path.GetFileName(filePath);
-            name = name.Remove(0, name.Length);
-            Textures[name] = LoadTextureFromFile(filePath);
+            string name = Path.GetFileNameWithoutExtension(filePath);
+            Textures.Add(
+                name,
+                LoadTextureFromFile(filePath)
+            );
             return Textures[name];
         }
 
@@ -96,8 +107,8 @@ namespace Breakout
             Texture2D texture = new();
             Image<Rgba32> image = Image.Load<Rgba32>(file);
             image.Mutate(x => x.Flip(FlipMode.Vertical));
-
             List<byte> pixels = new(4 * image.Width * image.Height);
+
             for (int y = 0; y < image.Height; y++)
             {
                 var row = image.GetPixelRowSpan(y);
@@ -110,9 +121,7 @@ namespace Breakout
                 }
             }
 
-            texture.Generate(image.Width, image.Height, pixels);
-            return texture;
-
+            return texture.Generate(image.Width, image.Height, pixels);
         }
 
         public static void ThrowIfFileDoesNotExist(string filePath)

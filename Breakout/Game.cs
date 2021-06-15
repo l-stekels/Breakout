@@ -35,7 +35,7 @@ namespace Breakout
             Matrix4.CreateOrthographicOffCenter(0.0f, (float)Width, (float)Height, 0.0f, -1.0f, 1.0f, out Matrix4 projection);
 
             sprite.Use().SetInteger("image", 0).SetMatrix4("projection", projection);
-
+            Renderer = new SpriteRenderer(sprite);
             foreach (string path in texturePaths)
             {
                 ResourceManager.LoadTexture(path);
@@ -66,7 +66,7 @@ namespace Breakout
                 0,
                 new Vector3(1.0f, 1.0f, 1.0f)
             );
-            Levels[Level].Draw(ref Renderer);
+            Levels[Level].Draw(Renderer);
         }
     }
 }

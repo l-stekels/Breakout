@@ -79,7 +79,7 @@
     <Content Include="Levels\three.lvl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Levels\fourth.lvl">
+    <Content Include="Levels\four.lvl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Shaders\sprite.frag">
