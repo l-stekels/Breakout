@@ -7,4 +7,12 @@
         Win,
         Pause
     }
+
+    public enum Direction
+    {
+        Up,
+        Right,
+        Down,
+        Left
+    }
 }

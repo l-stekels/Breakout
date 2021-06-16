@@ -6,6 +6,10 @@ namespace Breakout
 {
     public class GameLevel
     {
+        private List<List<int>> TileData;
+        private int LevelWidth;
+        private int LevelHeight;
+
         public List<GameObject> Bricks = new();
 
         public GameLevel(string filePath, int levelWidth, int levelHeight)
@@ -28,7 +32,8 @@ namespace Breakout
             {
                 return;
             }
-            Init(tileData, levelWidth, levelHeight);
+            (TileData, LevelWidth, LevelHeight) = (tileData, levelWidth, levelHeight);
+            Init();
         }
 
         public void Draw(SpriteRenderer renderer)
@@ -54,17 +59,22 @@ namespace Breakout
             return true;
         }
 
-        private void Init(List<List<int>> tileData, int levelWidth, int levelHeight)
+        public void Reset()
         {
-            int height = tileData.Count;
-            int width = tileData[0].Count;
-            float unitWidth = levelWidth / width;
-            float unitHeight = levelHeight / height;
+            Init();
+        }
+
+        private void Init()
+        {
+            int height = TileData.Count;
+            int width = TileData[0].Count;
+            float unitWidth = LevelWidth / width;
+            float unitHeight = LevelHeight / height;
             for (int y = 0; y < height; ++y)
             {
                 for (int x = 0; x < width; ++x)
                 {
-                    int tileCode = tileData[y][x];
+                    int tileCode = TileData[y][x];
 
                     GameObject obj = new(
                         new(unitWidth * x, unitHeight * y),

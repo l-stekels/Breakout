@@ -30,6 +30,9 @@
     <None Remove="Textures\block.png" />
     <None Remove="Textures\block_solid.png" />
     <None Remove="Textures\paddle.png" />
+    <None Remove="Shaders\particle.frag" />
+    <None Remove="Shaders\particle.vert" />
+    <None Remove="Textures\particle.png" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="OpenTK" Version="4.6.4" />
@@ -102,6 +105,15 @@
     </Content>
     <Content Include="Textures\paddle.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Shaders\particle.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Shaders\particle.vert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\particle.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 </Project>
