@@ -35,11 +35,10 @@ namespace Breakout
         {
             foreach (GameObject tile in Bricks)
             {
-                if (tile.Destroyed)
+                if (!tile.Destroyed)
                 {
-                    continue;
+                    tile.Draw(renderer);
                 }
-                tile.Draw(renderer);
             }
         }
 

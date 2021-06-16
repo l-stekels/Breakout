@@ -1,7 +1,6 @@
 ﻿using OpenTK.Mathematics;
-using System;
+using Keyboard = OpenTK.Windowing.GraphicsLibraryFramework.Keys;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Breakout
 {
@@ -11,32 +10,15 @@ namespace Breakout
         public int Height;
         public GameState State = GameState.Active;
         public SpriteRenderer Renderer;
-        public GameObject Player;
+        public Player Player;
+        public BallObject Ball;
         public List<GameLevel> Levels = new();
         public int Level = 0;
 
         public bool[] Keys = new bool[1024];
 
         private readonly string[] SpriteVertexPath = { "Shaders", "sprite.vert" };
-        private readonly string[] SpriteFragmentPath = { "Shaders", "sprite.frag" };
-
-        private readonly Vector2 InitialPlayerSize = new(100.0f, 20.0f);
-        private readonly float InitialPlayerVelocity = 500.0f;
-
-        private readonly Dictionary<GameState, Action<float>> processInputStates = new()
-        {
-            { GameState.Active, (float dt) => ActiveInputProcess(dt) },
-            { GameState.Menu, (float dt) => MenuInputProcess(dt) },
-            { GameState.Pause, (float dt) => PauseInputProcess(dt) },
-            { GameState.Win, (float dt) => WinInputProcess(dt) },
-        };
-        //private readonly Dictionary<GameState, Action<float>> updateStates = new()
-        //{
-        //    { GameState.Active, (float dt) => ActiveUpdate(dt) },
-        //    { GameState.Menu, (float dt) => MenuUpdate(dt) },
-        //    { GameState.Pause, (float dt) => PauseUpdate(dt) },
-        //    { GameState.Win, (float dt) => WinUpdate(dt) },
-        //};
+        private readonly string[] SpriteFragmentPath = { "Shaders", "sprite.frag" };        
 
         public Game(int width, int height) => (Width, Height) = (width, height);
 
@@ -66,18 +48,31 @@ namespace Breakout
             {
                 Levels.Add(new GameLevel(path, Width, Height / 2));
             }
-            Vector2 playerPosition = new(Width / 2.0f - InitialPlayerSize.X / 2.0f, Height - InitialPlayerSize.Y);
-            Player = new(playerPosition, InitialPlayerSize, ResourceManager.GetTexture("paddle"));
+
+            Player = new(Width, Height);
+            Ball = new(Player);
         }
 
         public void ProcessInput(float dt)
         {
-            processInputStates[State](dt);
+            if (Keys[(int)Keyboard.A])
+            {
+                Player.MoveLeft(dt);
+            }
+            if (Keys[(int)Keyboard.D])
+            {
+                Player.MoveRight(dt);
+            }
+            if (Keys[(int)Keyboard.Space])
+            {
+                Ball.Stuck = false;
+            }
         }
 
         public void Update(float dt)
         {
-            //updateStates[State](dt);
+            Ball.Move(dt, Width);
+            DoCollisions();
         }
 
         public void Render()
@@ -91,26 +86,37 @@ namespace Breakout
             );
             Levels[Level].Draw(Renderer);
             Player.Draw(Renderer);
+            Ball.Draw(Renderer);
         }
 
-        private static void ActiveInputProcess(float dt)
+        public void DoCollisions()
         {
-
+            foreach (GameObject brick in Levels[Level].Bricks)
+            {
+                int key = Levels[Level].Bricks.IndexOf(brick);
+                if (brick.Destroyed)
+                {
+                    continue;
+                }
+                if (!CheckCollision(brick, Ball))
+                {
+                    continue;
+                }
+                Levels[Level].Bricks[key].Destroyed = !brick.Solid;
+            }
         }
 
-        private static void MenuInputProcess(float dt)
+        private bool CheckCollision(GameObject one, GameObject two)
         {
+            bool oneXCollision = one.Position.X + one.Size.X >= two.Position.X;
+            bool twoXCollision = two.Position.X + two.Size.X >= one.Position.X;
 
+            bool oneYCollision = one.Position.Y + one.Size.Y >= two.Position.Y;
+            bool twoYCollision = two.Position.Y + two.Size.Y >= one.Position.Y;
+
+            return oneXCollision && twoXCollision && oneYCollision && twoYCollision;
         }
 
-        private static void PauseInputProcess(float dt)
-        {
 
-        }
-
-        private static void WinInputProcess(float dt)
-        {
-
-        }
     }
 }

@@ -31,6 +31,7 @@ namespace Breakout
 
         protected override void OnLoad()
         {
+            Focus();
             GL.Viewport(0, 0, Size.X, Size.Y);
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
@@ -64,19 +65,13 @@ namespace Breakout
 
         protected override void OnKeyDown(KeyboardKeyEventArgs e)
         {
-            if ((int)e.Key == 0 && (int)e.Key < 1024)
-            {
-                breakout.Keys[(int)e.Key] = true;
-            }
+            breakout.Keys[(int)e.Key] = true;
             base.OnKeyDown(e);
         }
 
         protected override void OnKeyUp(KeyboardKeyEventArgs e)
         {
-            if ((int)e.Key == 0 && (int)e.Key < 1024)
-            {
-                breakout.Keys[(int)e.Key] = false;
-            }
+            breakout.Keys[(int)e.Key] = false;
             base.OnKeyUp(e);
         }
 
