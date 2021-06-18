@@ -16,7 +16,7 @@ namespace Breakout
             ID = GL.GenTexture();
         }
 
-        public Texture2D Generate(int width, int height, List<byte> pixels)
+        public Texture2D Generate(int width, int height, byte[] pixels = null)
         {
             Width = width;
             Height = height;
@@ -38,7 +38,7 @@ namespace Breakout
                 0,
                 PixelFormat.Bgra,
                 PixelType.UnsignedByte,
-                pixels.ToArray()
+                pixels
             );
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 

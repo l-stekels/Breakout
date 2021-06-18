@@ -1,6 +1,7 @@
 ﻿using OpenTK.Mathematics;
 using Keyboard = OpenTK.Windowing.GraphicsLibraryFramework.Keys;
 using System.Collections.Generic;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace Breakout
 {
@@ -15,6 +16,8 @@ namespace Breakout
         public List<GameLevel> Levels = new();
         public int Level = 0;
         public ParticleGenerator Particles;
+        public PostProcessor Effects;
+        private float ShakeTime = 0.0f;
 
         public bool[] Keys = new bool[1024];
 
@@ -24,55 +27,83 @@ namespace Breakout
         private readonly string[] ParticleVertexPath = { "Shaders", "particle.vert" };
         private readonly string[] ParticleFragmentPath = { "Shaders", "particle.frag" };
 
+        private readonly string[] PostProcessingVertexPath = { "Shaders", "post_processing.vert" };
+        private readonly string[] PostProcessingFragmentPath = { "Shaders", "post_processing.frag" };
+
         public Game(int width, int height) => (Width, Height) = (width, height);
 
         ~Game()
         {
             ResourceManager.Clear();
             Renderer = null;
+            Player = null;
+            Ball = null;
+            Particles = null;
+            Effects = null;
         }
 
         public void Init()
         {
-            string[] texturePaths = ResourceManager.GetTexturePaths();
-            string[] levelPaths = ResourceManager.GetLevelPaths();
-
-            Shader sprite = ResourceManager.LoadShader("sprite", SpriteVertexPath, SpriteFragmentPath);
-            Shader particle = ResourceManager.LoadShader("particle", ParticleVertexPath, ParticleFragmentPath);
-
-            Matrix4.CreateOrthographicOffCenter(0.0f, (float)Width, (float)Height, 0.0f, -1.0f, 1.0f, out Matrix4 projection);
-
-            sprite.Use().SetInteger("image", 0).SetMatrix4("projection", projection);
-            Renderer = new SpriteRenderer(sprite);
-            foreach (string path in texturePaths)
+            foreach (string path in ResourceManager.GetTexturePaths())
             {
                 ResourceManager.LoadTexture(path);
             }
 
-            foreach (string path in levelPaths)
+            Shader sprite = ResourceManager.LoadShader("sprite", SpriteVertexPath, SpriteFragmentPath);
+            Shader particle = ResourceManager.LoadShader("particle", ParticleVertexPath, ParticleFragmentPath);
+            Shader postprocessing = ResourceManager.LoadShader("postprocessing", PostProcessingVertexPath, PostProcessingFragmentPath);
+
+            Matrix4.CreateOrthographicOffCenter(0.0f, (float)Width, (float)Height, 0.0f, -1.0f, 1.0f, out Matrix4 projection);
+
+            sprite.SetInteger("image", 0).SetMatrix4("projection", projection);
+            particle.SetInteger("sprite", 0).SetMatrix4("projection", projection);
+
+            Renderer = new SpriteRenderer(sprite);
+            Particles = new ParticleGenerator(particle, ResourceManager.GetTexture("particle"), 500);
+            Effects = new PostProcessor(postprocessing, Width, Height);
+
+            foreach (string path in ResourceManager.GetLevelPaths())
             {
                 Levels.Add(new GameLevel(path, Width, Height / 2));
             }
 
             Player = new(Width, Height);
             Ball = new(Player);
-            Particles = new ParticleGenerator(particle, ResourceManager.GetTexture("particle"), 500);
+        }
+
+        public void Update(float dt)
+        {
+            Ball.Move(dt, Width);
+            DoCollisions();
+            Particles.Update(dt, Ball, 2, new Vector2(Ball.Radius / 2.0f));
+            if (ShakeTime > 0.0f)
+            {
+                ShakeTime -= dt;
+                if (ShakeTime <= 0.0f)
+                {
+                    Effects.Shake = false;
+                }
+            }
+
+            if (Ball.Position.Y >= Height)
+            {
+                ResetLevel();
+                ResetPlayer();
+            }
         }
 
         public void ProcessInput(float dt)
         {
             if (Keys[(int)Keyboard.A])
             {
-                Player.MoveLeft(dt);
-                if (State.Equals(GameState.Active))
+                if (Player.MoveLeft(dt) && State.Equals(GameState.Active))
                 {
                     Ball.MoveLeft(dt * Player.InitialVelocity);
                 }
             }
             if (Keys[(int)Keyboard.D])
             {
-                Player.MoveRight(dt);
-                if (State.Equals(GameState.Active))
+                if (Player.MoveRight(dt) && State.Equals(GameState.Active))
                 {
                     Ball.MoveRight(dt * Player.InitialVelocity);
                 }
@@ -83,43 +114,24 @@ namespace Breakout
             }
         }
 
-        public void Update(float dt)
-        {
-            Ball.Move(dt, Width);
-            DoCollisions();
-            if (Ball.Position.Y >= Height)
-            {
-                ResetLevel();
-                ResetPlayer();
-            }
-            Particles.Update(dt, Ball, 2, new Vector2(Ball.Radius / 2.0f));
-        }
-
-        private void ResetLevel()
-        {
-            Level = 0;
-            Levels[Level].Reset();
-        }
-
-        private void ResetPlayer()
-        {
-            Player.Reset();
-            Ball.Reset();
-        }
-
         public void Render()
         {
-            Renderer.DrawSprite(
-                ResourceManager.GetTexture("background"),
-                new Vector2(0, 0),
-                new Vector2(Width, Height),
-                0,
-                new Vector3(1.0f, 1.0f, 1.0f)
-            );
-            Levels[Level].Draw(Renderer);
-            Player.Draw(Renderer);
-            Particles.Draw();
-            Ball.Draw(Renderer);
+            Effects.BeginRender();
+            {
+                Renderer.DrawSprite(
+                    ResourceManager.GetTexture("background"),
+                    new Vector2(0, 0),
+                    new Vector2(Width, Height),
+                    0,
+                    new Vector3(1.0f, 1.0f, 1.0f)
+                );
+                Levels[Level].Draw(Renderer);
+                Player.Draw(Renderer);
+                Particles.Draw();
+                Ball.Draw(Renderer);
+            }
+            Effects.EndRender();
+            Effects.Render((float)GLFW.GetTime());
         }
 
         public void DoCollisions()
@@ -140,9 +152,10 @@ namespace Breakout
                     continue;
                 }
 
-                if (!brick.Solid)
+                if (Levels[Level].Bricks[key].Destroy())
                 {
-                    Levels[Level].Bricks[key].Destroyed = true;
+                    ShakeTime = 0.05f;
+                    Effects.Shake = true;
                 }
 
                 float penetration;
@@ -247,6 +260,18 @@ namespace Breakout
                 }
             }
             return (Direction)bestMatch;
+        }
+
+        private void ResetLevel()
+        {
+            Level = 0;
+            Levels[Level].Reset();
+        }
+
+        private void ResetPlayer()
+        {
+            Player.Reset();
+            Ball.Reset();
         }
     }
 }

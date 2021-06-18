@@ -121,7 +121,7 @@ namespace Breakout
                 }
             }
 
-            return texture.Generate(image.Width, image.Height, pixels);
+            return texture.Generate(image.Width, image.Height, pixels.ToArray());
         }
 
         public static void ThrowIfFileDoesNotExist(string filePath)

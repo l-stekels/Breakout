@@ -27,7 +27,7 @@ namespace Breakout
 
         public void Update(float dt, GameObject gameObject, uint newParticles, Vector2 offset)
         {
-            for (uint i = 0; i < Amount; ++i)
+            for (uint i = 0; i < newParticles; ++i)
             {
                 int unusedParticle = FirstUnusedParticle();
                 RespawnParticle(Particles[unusedParticle], gameObject, offset);
@@ -41,9 +41,7 @@ namespace Breakout
                 }
                 Particles[i].Position -= Particles[i].Velocity * dt;
                 Particles[i].Color.W -= dt * 2.5f;
-
             }
-            
         }
 
         public void Draw()
@@ -132,6 +130,7 @@ namespace Breakout
                 gameObject.Position.Y + random + offset.Y
             );
             particle.Color = new Vector4(randomColor, randomColor, randomColor, 1.0f);
+            particle.Life = 1.0f;
             particle.Velocity = gameObject.Velocity * 0.1f;
         }
     }

@@ -30,5 +30,10 @@ namespace Breakout
         {
             return !Solid && !Destroyed;
         }
+
+        public bool Destroy()
+        {
+            return Destroyed = !Solid;
+        }
     }
 }

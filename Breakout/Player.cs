@@ -31,24 +31,26 @@ namespace Breakout
             );
         }
 
-        public void MoveLeft(float dt)
+        public bool MoveLeft(float dt)
         {
             float velocity = InitialVelocity * dt;
             if (Position.X < 0.0f)
             {
-                return;
+                return false;
             }
             Position.X -= velocity;
+            return true;
         }
 
-        public void MoveRight(float dt)
+        public bool MoveRight(float dt)
         {
             float velocity = InitialVelocity * dt;
             if (Position.X > GameWidth - Size.X)
             {
-                return;
+                return false;
             }
             Position.X += velocity;
+            return true;
         }
     }
 }
