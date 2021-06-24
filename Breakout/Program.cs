@@ -6,11 +6,11 @@ namespace Breakout
 {
     class Program
     {
-        public const string Title = "Breakout";
-        public const int Width = 1024;
-        public const int Height = 800;
+        private const string Title = "Breakout";
+        private const int Width = 1024;
+        private const int Height = 800;
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             GameWindowSettings gameWindowSettings = new();
             NativeWindowSettings nativeWindowSettings = new()
@@ -22,10 +22,9 @@ namespace Breakout
                 Profile = ContextProfile.Core
             };
 
-            using (Window window = new(gameWindowSettings, nativeWindowSettings, new Game(Width, Height)))
-            {
-                window.Run();
-            };
+            using Window window = new(gameWindowSettings, nativeWindowSettings, new Game(Width, Height));
+            window.Run();
+            ;
         }
     }
 }

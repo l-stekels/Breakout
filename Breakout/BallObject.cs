@@ -4,7 +4,7 @@ namespace Breakout
 {
     public class BallObject : GameObject
     {
-        private readonly Vector3 BrightOrange = new(1.0f, 0.415f, 0.101f);
+        private readonly Vector3 _brightOrange = new(1.0f, 0.415f, 0.101f);
         public readonly Vector2 InitialVelocity = new(100.0f, -500.0f);
         public float Radius = 12.5f;
         public bool Stuck = true;
@@ -17,7 +17,7 @@ namespace Breakout
             Sprite = ResourceManager.GetTexture("ball");
             Position = StartPosition;
             Size = new(Radius * 2.0f, Radius * 2.0f);
-            Color = BrightOrange;
+            Color = _brightOrange;
         }
 
         public Vector2 Move(float dt, int windowWidth)

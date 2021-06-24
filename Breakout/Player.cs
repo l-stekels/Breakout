@@ -5,29 +5,29 @@ namespace Breakout
     public class Player : GameObject
     {
         public readonly float InitialVelocity = 500.0f;
-        private readonly Vector2 InitialPlayerSize = new(100.0f, 20.0f);
-        private readonly int GameWidth;
-        private readonly int GameHeight;
+        private readonly Vector2 _initialPlayerSize = new(100.0f, 20.0f);
+        private readonly int _gameWidth;
+        private readonly int _gameHeight;
 
         public Player(int gameWidth, int gameHeight)
         {
-            (GameWidth, GameHeight) = (gameWidth, gameHeight);
+            (_gameWidth, _gameHeight) = (gameWidth, gameHeight);
             Position = GetInitialPosition();
             Sprite = ResourceManager.GetTexture("paddle");
-            Size = InitialPlayerSize;
+            Size = _initialPlayerSize;
         }
 
         public void Reset()
         {
-            Size = InitialPlayerSize;
+            Size = _initialPlayerSize;
             Position = GetInitialPosition();
         }
 
         public Vector2 GetInitialPosition()
         {
             return new Vector2(
-                GameWidth / 2.0f - InitialPlayerSize.X / 2.0f,
-                GameHeight - InitialPlayerSize.Y
+                _gameWidth / 2.0f - _initialPlayerSize.X / 2.0f,
+                _gameHeight - _initialPlayerSize.Y
             );
         }
 
@@ -45,7 +45,7 @@ namespace Breakout
         public bool MoveRight(float dt)
         {
             float velocity = InitialVelocity * dt;
-            if (Position.X > GameWidth - Size.X)
+            if (Position.X > _gameWidth - Size.X)
             {
                 return false;
             }

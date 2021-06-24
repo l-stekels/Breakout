@@ -6,9 +6,9 @@ namespace Breakout
 {
     public class GameLevel
     {
-        private List<List<int>> TileData;
-        private int LevelWidth;
-        private int LevelHeight;
+        private List<List<int>> _tileData;
+        private int _levelWidth;
+        private int _levelHeight;
 
         public List<GameObject> Bricks = new();
 
@@ -32,7 +32,7 @@ namespace Breakout
             {
                 return;
             }
-            (TileData, LevelWidth, LevelHeight) = (tileData, levelWidth, levelHeight);
+            (_tileData, _levelWidth, _levelHeight) = (tileData, levelWidth, levelHeight);
             Init();
         }
 
@@ -66,15 +66,15 @@ namespace Breakout
 
         private void Init()
         {
-            int height = TileData.Count;
-            int width = TileData[0].Count;
-            float unitWidth = LevelWidth / width;
-            float unitHeight = LevelHeight / height;
+            int height = _tileData.Count;
+            int width = _tileData[0].Count;
+            float unitWidth = _levelWidth / width;
+            float unitHeight = _levelHeight / height;
             for (int y = 0; y < height; ++y)
             {
                 for (int x = 0; x < width; ++x)
                 {
-                    int tileCode = TileData[y][x];
+                    int tileCode = _tileData[y][x];
 
                     GameObject obj = new(
                         new(unitWidth * x, unitHeight * y),

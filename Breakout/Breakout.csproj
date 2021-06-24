@@ -35,6 +35,7 @@
     <None Remove="Textures\particle.png" />
     <None Remove="Shaders\post_processing.vert" />
     <None Remove="Shaders\post_processing.frag" />
+    <None Remove="SharpFont" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="OpenTK" Version="4.6.4" />
@@ -109,19 +110,21 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Shaders\particle.frag">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Shaders\particle.vert">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Textures\particle.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Shaders\post_processing.vert">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Shaders\post_processing.frag">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Remove="Shaders\text_2d.glsl" />
+    <None Remove="Fonts\ARDESTINE.ttf" />
   </ItemGroup>
 </Project>

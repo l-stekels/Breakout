@@ -9,8 +9,6 @@ namespace Breakout
         public Vector4 Color = new(1.0f);
         public float Life = 0.0f;
 
-        public Particle()
-        {
-        }
+        public Particle() { }
     }
 }

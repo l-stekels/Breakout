@@ -7,16 +7,16 @@ namespace Breakout
 {
     public class ParticleGenerator
     {
-        private List<Particle> Particles = new();
-        private uint Amount;
-        private Shader Shader;
-        private Texture2D Texture;
-        private int VAO;
-        private int LastUsedParticle = 0;
+        private List<Particle> _particles = new();
+        private uint _amount;
+        private Shader _shader;
+        private Texture2D _texture;
+        private int _vao;
+        private int _lastUsedParticle = 0;
 
         public ParticleGenerator(Shader shader, Texture2D texture, uint amount)
         {
-            (Shader, Texture, Amount) = (shader, texture, amount);
+            (_shader, _texture, _amount) = (shader, texture, amount);
             Init();
         } 
 
@@ -30,34 +30,34 @@ namespace Breakout
             for (uint i = 0; i < newParticles; ++i)
             {
                 int unusedParticle = FirstUnusedParticle();
-                RespawnParticle(Particles[unusedParticle], gameObject, offset);
+                RespawnParticle(_particles[unusedParticle], gameObject, offset);
             }
-            for (int i = 0; i < Amount; ++i)
+            for (int i = 0; i < _amount; ++i)
             {
-                Particles[i].Life -= dt;
-                if (Particles[i].Life <= 0.0f)
+                _particles[i].Life -= dt;
+                if (_particles[i].Life <= 0.0f)
                 {
                     continue;
                 }
-                Particles[i].Position -= Particles[i].Velocity * dt;
-                Particles[i].Color.W -= dt * 2.5f;
+                _particles[i].Position -= _particles[i].Velocity * dt;
+                _particles[i].Color.W -= dt * 2.5f;
             }
         }
 
         public void Draw()
         {
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.One);
-            Shader.Use();
-            foreach (Particle particle in Particles)
+            _shader.Use();
+            foreach (Particle particle in _particles)
             {
                 if (particle.Life <= 0.0f)
                 {
                     continue;
                 }
-                Shader.SetVector2f("offset", particle.Position);
-                Shader.SetVector4("color", particle.Color);
-                Texture.Bind();
-                GL.BindVertexArray(VAO);
+                _shader.SetVector2F("offset", particle.Position);
+                _shader.SetVector4("color", particle.Color);
+                _texture.Bind();
+                GL.BindVertexArray(_vao);
                 GL.DrawArrays(PrimitiveType.Triangles, 0, 6);
                 GL.BindVertexArray(0);
             }
@@ -76,41 +76,41 @@ namespace Breakout
                 1.0f, 1.0f, 1.0f, 1.0f,
                 1.0f, 0.0f, 1.0f, 0.0f
             };
-            GL.GenVertexArrays(1, out VAO);
-            GL.GenBuffers(1, out uint VBO);
-            GL.BindVertexArray(VAO);
+            GL.GenVertexArrays(1, out _vao);
+            GL.GenBuffers(1, out uint vbo);
+            GL.BindVertexArray(_vao);
 
-            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, vbo);
             GL.BufferData(BufferTarget.ArrayBuffer, particleQuad.Length * sizeof(float), particleQuad, BufferUsageHint.StaticDraw);
 
             GL.EnableVertexAttribArray(0);
             GL.VertexAttribPointer(0, 4, VertexAttribPointerType.Float, false, 4 * sizeof(float), 0);
             GL.BindVertexArray(0);
-            for (uint i = 0; i < Amount; ++i)
+            for (uint i = 0; i < _amount; ++i)
             {
-                Particles.Add(new Particle());
+                _particles.Add(new Particle());
             }
         }
 
         private int FirstUnusedParticle()
         {
-            for (int i = LastUsedParticle; i < Amount; ++i)
+            for (int i = _lastUsedParticle; i < _amount; ++i)
             {
-                if (Particles[i].Life <= 0.0f)
+                if (_particles[i].Life <= 0.0f)
                 {
-                    LastUsedParticle = i;
+                    _lastUsedParticle = i;
                     return i;
                 }
             }
-            for (int i = 0; i < LastUsedParticle; ++i)
+            for (int i = 0; i < _lastUsedParticle; ++i)
             {
-                if (Particles[i].Life <= 0.0f)
+                if (_particles[i].Life <= 0.0f)
                 {
-                    LastUsedParticle = i;
+                    _lastUsedParticle = i;
                     return i;
                 }
             }
-            LastUsedParticle = 0;
+            _lastUsedParticle = 0;
             return 0;
 
         }

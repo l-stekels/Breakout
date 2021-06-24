@@ -7,13 +7,13 @@ namespace Breakout
 {
     public class Texture2D
     {
-        public int ID;
+        public int Id;
         public int Width = 0;
         public int Height = 0;
 
         public Texture2D()
         {
-            ID = GL.GenTexture();
+            Id = GL.GenTexture();
         }
 
         public Texture2D Generate(int width, int height, byte[] pixels = null)
@@ -21,7 +21,7 @@ namespace Breakout
             Width = width;
             Height = height;
 
-            GL.BindTexture(TextureTarget.Texture2D, ID);
+            GL.BindTexture(TextureTarget.Texture2D, Id);
 
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
@@ -48,7 +48,7 @@ namespace Breakout
 
         public void Bind()
         {
-            GL.BindTexture(TextureTarget.Texture2D, ID);
+            GL.BindTexture(TextureTarget.Texture2D, Id);
         }
     }
 }

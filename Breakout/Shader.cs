@@ -7,9 +7,9 @@ namespace Breakout
 {
     public class Shader
     {
-        public int ID;
+        public int Id;
 
-        private readonly Dictionary<string, int> UniformLocations = new();
+        private readonly Dictionary<string, int> _uniformLocations = new();
 
         public Shader(string vertexSource, string fragmentSource, string geometrySource)
         {
@@ -29,41 +29,41 @@ namespace Breakout
                 CompileShader(geometryShader, "GEOMETRY");
             }
 
-            ID = GL.CreateProgram();
+            Id = GL.CreateProgram();
 
-            GL.AttachShader(ID, vertexShader);
-            GL.AttachShader(ID, fragmentShader);
+            GL.AttachShader(Id, vertexShader);
+            GL.AttachShader(Id, fragmentShader);
             if (!string.IsNullOrEmpty(geometrySource))
             {
-                GL.AttachShader(ID, geometryShader);
+                GL.AttachShader(Id, geometryShader);
             }
-            LinkProgram(ID);
+            LinkProgram(Id);
 
 
-            GL.DetachShader(ID, vertexShader);
-            GL.DetachShader(ID, fragmentShader);
+            GL.DetachShader(Id, vertexShader);
+            GL.DetachShader(Id, fragmentShader);
 
             GL.DeleteShader(vertexShader);
             GL.DeleteShader(fragmentShader);
             if (!string.IsNullOrEmpty(geometrySource))
             {
-                GL.DetachShader(ID, geometryShader);
+                GL.DetachShader(Id, geometryShader);
                 GL.DeleteShader(geometryShader);
             }
-            GL.GetProgram(ID, GetProgramParameterName.ActiveUniforms, out int numberOfUniforms);
+            GL.GetProgram(Id, GetProgramParameterName.ActiveUniforms, out int numberOfUniforms);
 
             for (var i = 0; i < numberOfUniforms; i++)
             {
-                string key = GL.GetActiveUniform(ID, i, out _, out _);
-                int location = GL.GetUniformLocation(ID, key);
-                UniformLocations.Add(key, location);
+                string key = GL.GetActiveUniform(Id, i, out _, out _);
+                int location = GL.GetUniformLocation(Id, key);
+                _uniformLocations.Add(key, location);
             }
 
         }
 
         public Shader Use()
         {
-            GL.UseProgram(ID);
+            GL.UseProgram(Id);
             return this;
         }
 
@@ -71,7 +71,7 @@ namespace Breakout
         {
             Use();
             GL.Uniform1(
-                UniformLocations[name],
+                _uniformLocations[name],
                 value
             );
             return this;
@@ -81,39 +81,39 @@ namespace Breakout
         {
             Use();
             GL.Uniform1(
-                UniformLocations[name],
+                _uniformLocations[name],
                 value
             );
             return this;
         }
 
-        public Shader SetVector2f(string name, float x, float y)
+        public Shader SetVector2F(string name, float x, float y)
         {
             Use();
             GL.Uniform2(
-                UniformLocations[name],
+                _uniformLocations[name],
                 x,
                 y
             );
             return this;
         }
 
-        public Shader SetVector2f(string name, Vector2 vector)
+        public Shader SetVector2F(string name, Vector2 vector)
         {
             Use();
             GL.Uniform2(
-                UniformLocations[name],
+                _uniformLocations[name],
                 vector.X,
                 vector.Y
             );
             return this;
         }
 
-        public Shader SetVector3f(string name, float x, float y, float z)
+        public Shader SetVector3F(string name, float x, float y, float z)
         {
             Use();
             GL.Uniform3(
-                UniformLocations[name],
+                _uniformLocations[name],
                 x,
                 y,
                 z
@@ -121,11 +121,11 @@ namespace Breakout
             return this;
         }
 
-        public Shader SetVector3f(string name, Vector3 vector)
+        public Shader SetVector3F(string name, Vector3 vector)
         {
             Use();
             GL.Uniform3(
-                UniformLocations[name],
+                _uniformLocations[name],
                 vector.X,
                 vector.Y,
                 vector.Z
@@ -137,7 +137,7 @@ namespace Breakout
         {
             Use();
             GL.Uniform4(
-                UniformLocations[name],
+                _uniformLocations[name],
                 x,
                 y,
                 z,
@@ -150,7 +150,7 @@ namespace Breakout
         {
             Use();
             GL.Uniform4(
-                UniformLocations[name],
+                _uniformLocations[name],
                 vector.X,
                 vector.Y,
                 vector.Z,
@@ -163,7 +163,7 @@ namespace Breakout
         {
             Use();
             GL.UniformMatrix4(
-                UniformLocations[name],
+                _uniformLocations[name],
                 false,
                 ref matrix
             );

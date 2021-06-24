@@ -80,11 +80,11 @@ namespace Breakout
         {
             foreach(KeyValuePair<string, Shader> entry in Shaders)
             {
-                GL.DeleteProgram(entry.Value.ID);
+                GL.DeleteProgram(entry.Value.Id);
             }
             foreach(KeyValuePair<string, Texture2D> entry in Textures)
             {
-                GL.DeleteTexture(entry.Value.ID);
+                GL.DeleteTexture(entry.Value.Id);
             }
         }
 
