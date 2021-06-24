@@ -4,7 +4,7 @@ using OpenTK.Windowing.Desktop;
 
 namespace Breakout
 {
-    class Program
+    internal static class Program
     {
         private const string Title = "Breakout";
         private const int Width = 1024;

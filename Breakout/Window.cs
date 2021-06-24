@@ -1,5 +1,4 @@
 ﻿using OpenTK.Windowing.Desktop;
-using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using OpenTK.Graphics.OpenGL4;
@@ -13,20 +12,6 @@ namespace Breakout
         public Window(GameWindowSettings gameWindowSettings, NativeWindowSettings nativeWindowSettings, Game game) : base(gameWindowSettings, nativeWindowSettings)
         {
             _breakout = game;
-        }
-
-        public static Window WindowFactory(string title, int width, int height)
-        {
-            GameWindowSettings gameWindowSettings = new();
-            NativeWindowSettings nativeWindowSettings = new()
-            {
-                Title = title,
-                Size = new Vector2i(width, height),
-                APIVersion = new System.Version(4, 1),
-                Flags = ContextFlags.ForwardCompatible,
-                Profile = ContextProfile.Core
-            };
-            return new Window(gameWindowSettings, nativeWindowSettings, new Game(width, height));
         }
 
         protected override void OnLoad()

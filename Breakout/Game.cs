@@ -1,4 +1,5 @@
-﻿using OpenTK.Mathematics;
+﻿using System;
+using OpenTK.Mathematics;
 using Keyboard = OpenTK.Windowing.GraphicsLibraryFramework.Keys;
 using System.Collections.Generic;
 using OpenTK.Windowing.GraphicsLibraryFramework;
@@ -69,6 +70,8 @@ namespace Breakout
 
             _player = new Player(_width, _height);
             _ball = new BallObject(_player);
+
+            _level = (new Random()).Next(4);
         }
 
         public void Update(float dt)
@@ -85,11 +88,9 @@ namespace Breakout
                 }
             }
 
-            if (_ball.Position.Y >= _height)
-            {
-                ResetLevel();
-                ResetPlayer();
-            }
+            if (!(_ball.Position.Y >= _height)) return;
+            ResetLevel();
+            ResetPlayer();
         }
 
         public void ProcessInput(float dt)
@@ -257,7 +258,7 @@ namespace Breakout
 
         private void ResetLevel()
         {
-            _level = 0;
+            _level = (new Random()).Next(4);
             _levels[_level].Reset();
         }
 
