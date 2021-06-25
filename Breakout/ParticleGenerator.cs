@@ -54,7 +54,7 @@ namespace Breakout
                 {
                     continue;
                 }
-                _shader.SetVector2F("offset", particle.Position);
+                _shader.SetVector2("offset", particle.Position);
                 _shader.SetVector4("color", particle.Color);
                 _texture.Bind();
                 GL.BindVertexArray(_vao);

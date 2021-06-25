@@ -19,7 +19,7 @@ namespace Breakout
 
         public static string[] GetLevelPaths()
         {
-            return Directory.GetFiles("Levels/");
+            return Directory.GetFiles("Levels");
         }
 
         public static Shader LoadShader(string name, string[] vShaderFilePath, string[] fShaderFilePath)
@@ -29,19 +29,6 @@ namespace Breakout
                 LoadShaderFromFile(
                     Path.Combine(vShaderFilePath),
                     Path.Combine(fShaderFilePath)
-                )
-            );
-            return Shaders[name];
-        }
-
-        public static Shader LoadShader(string name, string[] vShaderFilePath, string[] fShaderFilePath, string[] gShaderFilePath)
-        {
-            Shaders.Add(
-                name,
-                LoadShaderFromFile(
-                    Path.Combine(vShaderFilePath),
-                    Path.Combine(fShaderFilePath),
-                    Path.Combine(gShaderFilePath)
                 )
             );
             return Shaders[name];
@@ -63,7 +50,7 @@ namespace Breakout
 
         public static Texture2D LoadTexture(string filePath)
         {
-            string name = Path.GetFileNameWithoutExtension(filePath);
+            var name = Path.GetFileNameWithoutExtension(filePath);
             Textures.Add(
                 name,
                 LoadTextureFromFile(filePath)

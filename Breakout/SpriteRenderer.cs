@@ -63,7 +63,7 @@ namespace Breakout
             model = scale * model;
 
             _shader.SetMatrix4("model", model);
-            _shader.SetVector3F("spriteColor", color);
+            _shader.SetVector3("spriteColor", color);
 
             GL.ActiveTexture(TextureUnit.Texture0);
             texture.Bind();
@@ -79,7 +79,7 @@ namespace Breakout
             {
                 // Vertex
                 // position
-                // coordinates  // Texture coordintes
+                // coordinates  // Texture coordinates
                 0.0f, 1.0f,     0.0f, 1.0f,
                 1.0f, 0.0f,     1.0f, 0.0f,
                 0.0f, 0.0f,     0.0f, 0.0f,

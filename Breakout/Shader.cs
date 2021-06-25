@@ -39,7 +39,6 @@ namespace Breakout
             }
             LinkProgram(Id);
 
-
             GL.DetachShader(Id, vertexShader);
             GL.DetachShader(Id, fragmentShader);
 
@@ -87,7 +86,7 @@ namespace Breakout
             return this;
         }
 
-        public Shader SetVector2F(string name, float x, float y)
+        public Shader SetVector2(string name, float x, float y)
         {
             Use();
             GL.Uniform2(
@@ -98,7 +97,7 @@ namespace Breakout
             return this;
         }
 
-        public Shader SetVector2F(string name, Vector2 vector)
+        public Shader SetVector2(string name, Vector2 vector)
         {
             Use();
             GL.Uniform2(
@@ -109,7 +108,7 @@ namespace Breakout
             return this;
         }
 
-        public Shader SetVector3F(string name, float x, float y, float z)
+        public Shader SetVector3(string name, float x, float y, float z)
         {
             Use();
             GL.Uniform3(
@@ -121,7 +120,7 @@ namespace Breakout
             return this;
         }
 
-        public Shader SetVector3F(string name, Vector3 vector)
+        public Shader SetVector3(string name, Vector3 vector)
         {
             Use();
             GL.Uniform3(

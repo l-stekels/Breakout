@@ -1,8 +1,8 @@
 ﻿using System;
-using OpenTK.Mathematics;
-using Keyboard = OpenTK.Windowing.GraphicsLibraryFramework.Keys;
 using System.Collections.Generic;
+using OpenTK.Mathematics;
 using OpenTK.Windowing.GraphicsLibraryFramework;
+using Keyboard = OpenTK.Windowing.GraphicsLibraryFramework.Keys;
 
 namespace Breakout
 {
@@ -15,10 +15,10 @@ namespace Breakout
         private Player _player;
         private BallObject _ball;
         private List<GameLevel> _levels = new();
-        private int _level = 0;
+        private int _level;
         private ParticleGenerator _particles;
         private PostProcessor _effects;
-        private float _shakeTime = 0.0f;
+        private float _shakeTime;
 
         public bool[] Keys = new bool[1024];
 
@@ -139,7 +139,7 @@ namespace Breakout
         {
             foreach (var brick in _levels[_level].Bricks)
             {
-                int key = _levels[_level].Bricks.IndexOf(brick);
+                var key = _levels[_level].Bricks.IndexOf(brick);
 
                 if (brick.Destroyed)
                 {

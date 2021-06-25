@@ -24,7 +24,6 @@ namespace Breakout
 
             using Window window = new(gameWindowSettings, nativeWindowSettings, new Game(Width, Height));
             window.Run();
-            ;
         }
     }
 }
